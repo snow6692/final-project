@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String?
+
+  verification_code    String?   @unique
+  verification_expires DateTime? // Expiry time for verification
+
+  is_verified Boolean @default(false)
+
+  password_reset_token String?   @unique
+  reset_token_expires  DateTime? // Expiry for reset password
+
+  google_id   String? @unique
+  facebook_id String? @unique
+
+  image       String?
+  dateOfBirth DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  categories    Category[]
+  images        Image[]
+  outfits       Outfit[]
+  notifications Notification[]
+
+  sessions Session[] // 🟢 One user can have multiple sessions
+
+  @@map("users")
+}
+
+model Session {
+  sid    String   @id @default(uuid())
+  sess   Json
+  expire DateTime
+
+  userId String? // 🔹 Foreign key to associate sessions with users
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+
+
+  @@map("session")
+}
+
+model Category {
+  id        String       @id @default(uuid())
+  name      CategoryType
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images    Image[]
+}
+
+enum CategoryType {
+  Tops
+  Bottoms
+  Shoes
+}
+
+model Image {
+  id         String   @id @default(uuid())
+  name       String
+  url        String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  outfitImages OutfitImage[]
+}
+
+model Outfit {
+  id        String   @id @default(uuid())
+  name      String
+  favourite Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  outfitImages OutfitImage[]
+}
+
+model OutfitImage {
+  id       String @id @default(uuid())
+  outfitId String
+  imageId  String
+  outfit   Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  image    Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
