@@ -12,7 +12,6 @@ export function login(req: Request, res: Response, next: NextFunction) {
       return res.status(422).json({ errors: parsedData.error.format() });
     }
 
-    const { email, password } = parsedData.data;
     passport.authenticate("local", (error: any, user: User, info: any) => {
       if (error) {
         return res.status(500).json({ message: "Something went wrong" });
@@ -67,13 +66,4 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
     return res.status(500).json({ message: "Something went wrong", error });
   }
 }
-export function isAuthenticated(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json({ error: "Unauthorized: Please log in" });
-}
+

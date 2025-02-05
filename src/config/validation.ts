@@ -14,3 +14,9 @@ export const loginSchema = z.object({
 });
 
 export type loginSchema = z.infer<typeof loginSchema>;
+
+export const categorySchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+});
+
+export type categorySchema = z.infer<typeof categorySchema>;

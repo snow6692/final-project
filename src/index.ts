@@ -6,9 +6,34 @@ import { config } from "./config/config";
 import userRouter from "./routes/user";
 import authRouter from "./routes/auth";
 import imageRouter from "./routes/image";
+import categoryRouter from "./routes/category";
+import { v2 as cloudinary } from "cloudinary";
+import outfitRoutes from "./routes/outfit";
 
 const app = express();
+cloudinary.config({
+  cloud_name: config.CLOUDINARY_NAME,
+  api_key: config.CLOUDINARY_KEY,
+  api_secret: config.CLOUDINARY_SECRET,
+});
 
+// const url = cloudinary.url("cld-sample-5", {
+//   transformation: [
+//     {
+//       fetch_format: "auto",
+//     },
+//     {
+//       quality: "auto",
+//     },
+//     {
+//       width: 1200,
+//       height: 1200,
+//       crop: "fill",
+//       gravity: "auto",
+//     },
+//   ],
+// });
+// console.log(url);
 // Initialize pgSession store for express-session
 const PgStore = pgSession(session);
 
@@ -38,9 +63,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/user", userRouter);
-app.use("/auth", authRouter);
-app.use("/images", imageRouter);
+app.use("/api/user", userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/image", imageRouter);
+app.use("/api/outfits", outfitRoutes);
+app.use("/api/category", categoryRouter);
 
 const PORT = config.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
