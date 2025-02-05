@@ -1,25 +1,34 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { User } from "@prisma/client";
+import { outfitSchema } from "../config/validation";
+import prisma from "../utils/prisma";
 
-const prisma = new PrismaClient();
-
-/**
- * ✅ إنشاء Outfit جديد مع صور مرتبطة به
- */
 export const createOutfit = async (req: Request, res: Response) => {
   try {
-    const { userId, name, imageIds } = req.body;
+    const user = req.user as User;
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized: Please log in" });
+    }
 
-    if (!userId || !name || !imageIds || !Array.isArray(imageIds)) {
-      return res.status(400).json({ message: "بيانات غير كاملة" });
+    const parsedData = outfitSchema.safeParse(req.body);
+    if (!parsedData.success) {
+      return res.status(422).json({ errors: parsedData.error.format() });
+    }
+
+    let { images, favorite } = parsedData.data;
+    const userId = user.id;
+
+    if (!Array.isArray(images)) {
+      return res.status(400).json({ error: " should be an Array of images" });
     }
 
     const outfit = await prisma.outfit.create({
       data: {
-        name,
+        favorite,
         userId,
+
         images: {
-          create: imageIds.map((imageId: string) => ({ imageId })),
+          connect: images.map((imageId: string) => ({ id: imageId })),
         },
       },
       include: { images: true },
@@ -28,51 +37,130 @@ export const createOutfit = async (req: Request, res: Response) => {
     return res.status(201).json(outfit);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "خطأ في السيرفر" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
-/**
- * ✅ جلب جميع Outfits للمستخدم
- */
 export const getUserOutfits = async (req: Request, res: Response) => {
   try {
     const { userId } = req.query;
 
     if (!userId) {
-      return res.status(400).json({ message: "يجب إرسال معرف المستخدم" });
+      return res.status(400).json({ message: " UserId is required" });
+    }
+    const currentUser = req.user as User;
+    if (currentUser.id !== userId) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized: You can't view other users' outfits" });
     }
 
     const outfits = await prisma.outfit.findMany({
       where: { userId: userId as string },
-      include: { images: { include: { image: true } } }, // ✅ جلب الصور المرتبطة بالأوتفيت
+      include: {
+        images: true,
+      },
     });
 
-    return res.json(outfits);
+    return res.status(200).json(outfits);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "خطأ في السيرفر" });
+    return res.status(500).json({ message: " Something went wrong " });
   }
 };
 
-/**
- * ✅ حذف Outfit معين
- */
 export const deleteOutfit = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Id is required" });
+    }
+    const currentUser = req.user as User;
+    if (!currentUser) {
+      return res.status(401).json({ error: "Unauthorized: Please log in" });
+    }
 
     const outfit = await prisma.outfit.findUnique({ where: { id } });
 
     if (!outfit) {
-      return res.status(404).json({ message: "Outfit غير موجود" });
+      return res.status(404).json({ message: "Outfit not found!" });
     }
 
     await prisma.outfit.delete({ where: { id } });
 
-    return res.json({ message: "تم حذف Outfit بنجاح" });
+    return res.status(200).json({ message: "Outfit deleted!" });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "خطأ في السيرفر" });
+    return res.status(500).json({ message: " Something went wrong " });
+  }
+};
+
+export const updateOutfit = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Id is required" });
+    }
+    const currentUser = req.user as User;
+    if (!currentUser) {
+      return res.status(401).json({ error: "Unauthorized: Please log in" });
+    }
+    const parsedData = outfitSchema.safeParse(req.body);
+    if (!parsedData.success) {
+      return res.status(422).json({ errors: parsedData.error.format() });
+    }
+    const { images, favorite } = parsedData.data;
+    const userId = currentUser.id;
+    const outfit = await prisma.outfit.findUnique({ where: { id } });
+    if (!outfit) {
+      return res.status(404).json({ message: "Outfit not found!" });
+    }
+    if (outfit.userId !== userId) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized: You can't update other users' outfits" });
+    }
+    await prisma.outfit.update({
+      where: { id },
+      data: {
+        favorite,
+        images: {
+          connect: images.map((imageId: string) => ({ id: imageId })),
+        },
+      },
+    });
+    return res.status(200).json({ message: "Outfit updated!" });
+  } catch (error) {
+    return res.status(500).json({ message: " Something went wrong " });
+  }
+};
+
+export const getOutfitById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Id is required" });
+    }
+    const currentUser = req.user as User;
+    if (!currentUser) {
+      return res.status(401).json({ error: "Unauthorized: Please log in" });
+    }
+
+    const outfit = await prisma.outfit.findUnique({
+      where: { id },
+      include: { images: true },
+    });
+
+    if (!outfit) {
+      return res.status(404).json({ message: "Outfit not found!" });
+    }
+    if (outfit.userId !== currentUser.id) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized: You can't view other users' outfits" });
+    }
+
+    return res.status(200).json(outfit);
+  } catch (error) {
+    return res.status(500).json({ message: " Something went wrong " });
   }
 };

@@ -53,51 +53,35 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   image     String
-  images    Image[]
 }
 
 model Image {
-  id         String    @id @default(uuid())
-  name       String
+  id         String   @id @default(uuid())
   url        String
-  categoryId String? // ✅ الآن يمكن أن تكون الصورة بدون فئة
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
   userId     String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  outfits OutfitImage[] // ✅ العلاقة مع Outfits
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outfits Outfit[] // m=>m
 }
 
 model Outfit {
   id        String   @id @default(uuid())
-  name      String
   favorite  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  images OutfitImage[] // ✅ العلاقة مع الصور
-}
-
-model OutfitImage {
-  id        String   @id @default(uuid())
-  outfitId  String
-  imageId   String
-  createdAt DateTime @default(now())
-
-  outfit Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
-  image  Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
-
-  @@unique([outfitId, imageId]) // ✅ منع تكرار نفس الصورة داخل نفس الـ Outfit
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images Image[] // m=>m
 }
 
 model Notification {
   id          String   @id @default(uuid())
   title       String
-  description String
+  description String?
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)

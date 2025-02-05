@@ -8,7 +8,7 @@ import authRouter from "./routes/auth";
 import imageRouter from "./routes/image";
 import categoryRouter from "./routes/category";
 import { v2 as cloudinary } from "cloudinary";
-import outfitRoutes from "./routes/outfit";
+import outfitRouter from "./routes/outfit";
 
 const app = express();
 cloudinary.config({
@@ -66,8 +66,8 @@ app.use(passport.session());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/image", imageRouter);
-app.use("/api/outfits", outfitRoutes);
 app.use("/api/category", categoryRouter);
+app.use("/api/outfit", outfitRouter);
 
 const PORT = config.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

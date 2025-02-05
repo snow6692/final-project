@@ -7,8 +7,8 @@ import {
 
 const router = express.Router();
 
-router.post("/", createOutfit); // ✅ إضافة Outfit جديد
-router.get("/", getUserOutfits); // ✅ جلب جميع Outfits للمستخدم
-router.delete("/:id", deleteOutfit); // ✅ حذف Outfit معين
+router.post("/", createOutfit);
+router.get("/", getUserOutfits);
+router.delete("/:id", deleteOutfit);
 
 export default router;
