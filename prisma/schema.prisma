@@ -8,43 +8,41 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  name     String
-  email    String  @unique
-  password String?
-
-  verification_code    String?   @unique
-  verification_expires DateTime? // Expiry time for verification
-
-  is_verified Boolean @default(false)
-
-  password_reset_token String?   @unique
-  reset_token_expires  DateTime? // Expiry for reset password
-
-  google_id String? @unique
-
-  image       String?
-  dateOfBirth DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String?
+  emailVerified DateTime?
+  accounts      Account[]
+  sessions      Session[]
   images        Image[]
   outfits       Outfit[]
   notifications Notification[]
-  sessions      Session[]
+}
 
-  @@map("users")
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-  sid    String   @id @default(uuid())
-  sess   Json
-  expire DateTime
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("session")
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -56,15 +54,12 @@ model Category {
 }
 
 model Image {
-  id         String   @id @default(uuid())
-  url        String
-  categoryId String
-  userId     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  outfits Outfit[] // m=>m
+  id        String   @id @default(uuid())
+  url       String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outfits   Outfit[]
+  createdAt DateTime @default(now())
 }
 
 model Outfit {
@@ -72,10 +67,9 @@ model Outfit {
   favorite  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  images Image[] // m=>m
+  images    Image[]
 }
 
 model Notification {

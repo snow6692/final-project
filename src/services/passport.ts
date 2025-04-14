@@ -2,7 +2,7 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import GoogleStrategy from "passport-google-oauth20";
 import bcryptjs from "bcryptjs";
-import prisma from "../utils/prisma";
+import prisma from "../config/prisma";
 import { config } from "../config/config";
 import { access } from "fs";
 

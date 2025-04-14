@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "@prisma/client";
 import { outfitSchema } from "../config/validation";
-import prisma from "../utils/prisma";
+import prisma from "../config/prisma";
 
 export const createOutfit = async (req: Request, res: Response) => {
   try {

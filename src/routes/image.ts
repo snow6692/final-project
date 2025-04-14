@@ -1,6 +1,5 @@
 import express from "express";
 import upload from "../utils/multer";
-import { isAuthenticated } from "../middlewares/auth";
 import {
   createImage,
   deleteImageById,
@@ -12,16 +11,16 @@ import {
 
 const router = express.Router();
 
-router.post("/", isAuthenticated, upload.single("image"), createImage);
+// router.post("/", isAuthenticated, upload.single("image"), createImage);
 
-router.delete("/:id", isAuthenticated, deleteImageById);
+// router.delete("/:id", isAuthenticated, deleteImageById);
 
-router.patch("/:id", isAuthenticated, upload.single("image"), updateImageById);
+// router.patch("/:id", isAuthenticated, upload.single("image"), updateImageById);
 
-router.get("/:id", isAuthenticated, getImageById);
+// router.get("/:id", isAuthenticated, getImageById);
 
-router.get("/category/:categoryId", isAuthenticated, getImagesByCategory);
+// router.get("/category/:categoryId", isAuthenticated, getImagesByCategory);
 
-router.get("/user/:userId", isAuthenticated, getImagesByUserId);
+// router.get("/user/:userId", isAuthenticated, getImagesByUserId);
 
 export default router;

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../utils/prisma";
+import prisma from "../config/prisma";
 import { User } from "@prisma/client";
 
 import { imageSchema } from "../config/validation";

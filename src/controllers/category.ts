@@ -1,5 +1,5 @@
 import { categorySchema } from "../config/validation";
-import prisma from "../utils/prisma";
+import prisma from "../config/prisma";
 import { Request, Response } from "express";
 
 export async function createCategory(req: Request, res: Response) {
