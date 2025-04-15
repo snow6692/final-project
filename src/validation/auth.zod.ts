@@ -13,4 +13,12 @@ export const signUpZod = z
     message: "Passwords do not match",
   });
 
+export const signInZod = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" }),
+});
+
+export type signInZod = z.infer<typeof signInZod>;
 export type signUpZod = z.infer<typeof signUpZod>;

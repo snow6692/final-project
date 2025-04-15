@@ -16,7 +16,7 @@ cloudinary.config({
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-
+app.use("/api/auth", authRoutes);
 app.use("/api/image", imageRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/outfit", outfitRouter);
