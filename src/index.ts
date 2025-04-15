@@ -2,7 +2,7 @@ import express from "express";
 import session from "express-session";
 import { config } from "./config/config";
 import imageRouter from "./routes/image";
-import categoryRouter from "./routes/category";
+import categoryRouter from "./routes/category.route";
 import userRoute from "./routes/user.route";
 import authRoutes from "./auth/auth.routes";
 import { v2 as cloudinary } from "cloudinary";

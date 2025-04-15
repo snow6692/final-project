@@ -2,12 +2,7 @@ import { Response, Request } from "express";
 import { userTypes } from "../types/user.types";
 import prisma from "../config/prisma";
 import { CustomRequest } from "../types/express";
-import {
-  ChangePasswordInput,
-  changePasswordSchema,
-  UpdateUserInput,
-  updateUserSchema,
-} from "../validation/user.zod";
+import { passwordZod, userZod } from "../validation/user.zod";
 import bcrypt from "bcryptjs";
 export const getUserById = async (req: CustomRequest, res: Response) => {
   const userId = req.userId;
@@ -58,30 +53,23 @@ export const updateUserById = async (req: CustomRequest, res: Response) => {
 
   try {
     // Validate the request body using Zod
-    const parsedData = updateUserSchema.safeParse(req.body);
+    const parsedData = userZod.safeParse(req.body);
     if (!parsedData.success) {
       return res.status(400).json({ message: parsedData.error.errors });
     }
 
-    const data: UpdateUserInput = parsedData.data;
+    const data: userZod = parsedData.data;
 
     // Prepare the update data
-    const updateData: Partial<UpdateUserInput> = {};
-
-    // Copy over fields that were provided
-    if (data.name) updateData.name = data.name;
-    if (data.image) updateData.image = data.image;
-    if (data.Gender) updateData.Gender = data.Gender;
-    if (data.dateOfBirth) updateData.dateOfBirth = data.dateOfBirth;
 
     // Update the user in the database
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        dateOfBirth: updateData.dateOfBirth,
-        Gender: updateData.Gender,
-        image: updateData.image,
-        name: updateData.name,
+        dateOfBirth: data.dateOfBirth,
+        Gender: data.Gender,
+        image: data.image,
+        name: data.name,
       },
       include: {
         images: true,
@@ -110,12 +98,12 @@ export const changePassword = async (req: CustomRequest, res: Response) => {
 
   try {
     // Validate the request body using Zod
-    const parsedData = changePasswordSchema.safeParse(req.body);
+    const parsedData = passwordZod.safeParse(req.body);
     if (!parsedData.success) {
       return res.status(400).json({ message: parsedData.error.errors });
     }
 
-    const data: ChangePasswordInput = parsedData.data;
+    const data: passwordZod = parsedData.data;
 
     // Fetch the current user to check their authentication method
     const user = await prisma.user.findUnique({
