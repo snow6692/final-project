@@ -1,12 +1,6 @@
 import prisma from "../config/prisma";
-import { Request, Response } from "express";
+import {  Response } from "express";
 import { CustomRequest } from "../types/express";
-
-
-
-
-
-
 
 export async function getAllCategories(req: CustomRequest, res: Response) {
   

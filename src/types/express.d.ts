@@ -11,4 +11,5 @@ interface PassportUser {
 export interface CustomRequest extends ExpressRequest {
   userId?: string;
   user?: userTypes | PassportUser;
+  file?: CloudinaryFile; // Add typing for req.file
 }

@@ -1,8 +1,8 @@
 import express from "express";
 import session from "express-session";
 import { config } from "./config/config";
-import imageRouter from "./routes/image";
-import categoryRouter from "./routes/category.route";
+import imageRoute from "./routes/image.route";
+import categoryRoute from "./routes/category.route";
 import userRoute from "./routes/user.route";
 import authRoutes from "./auth/auth.routes";
 import { v2 as cloudinary } from "cloudinary";
@@ -32,8 +32,8 @@ app.use(passport.session());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoute);
-app.use("/api/image", imageRouter);
-app.use("/api/category", categoryRouter);
+app.use("/api/category", categoryRoute);
+app.use("/api/image", imageRoute);
 // app.use("/api/outfit", outfitRouter);
 
 const PORT = config.PORT;
