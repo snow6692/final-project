@@ -6,7 +6,7 @@ import prisma from "../config/prisma";
 import { signInZod, signUpZod } from "../validation/auth.zod";
 import { config } from "../config/config";
 
-export const signup = async (req: Request, res: Response) => {
+export const signUp = async (req: Request, res: Response) => {
   const parse = signUpZod.safeParse(req.body);
 
   if (!parse.success) {
@@ -65,7 +65,15 @@ export const signIn = async (req: Request, res: Response) => {
   const { email, password } = parse.data;
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        images: true,
+        outfits: true,
+        notifications: true,
+        sessions: true,
+      },
+    });
 
     if (!user || !user.password) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -77,11 +85,28 @@ export const signIn = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    const token = jwt.sign({ userId: user.id }, config.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
     const { password: _, ...userWithoutPassword } = user;
 
-    return res.status(200).json(userWithoutPassword);
+    return res.status(201).json({ token, user: userWithoutPassword });
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ message: "Something went wrong" });
   }
+};
+
+export const logout = (req: Request, res: Response) => {
+  // Destroy the session (for Google auth)
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).json({ message: "Failed to log out" });
+    }
+
+    // Instruct the client to delete the JWT token
+    res.status(200).json({ message: "Logged out successfully" });
+  });
 };

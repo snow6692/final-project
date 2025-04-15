@@ -1,11 +1,14 @@
-import { Request, Response } from "express";
-import { User } from "@prisma/client";
+import { Response } from "express";
 import { outfitSchema } from "../config/validation";
 import prisma from "../config/prisma";
+import { userTypes } from "../types/user.types";
 
-export const createOutfit = async (req: Request, res: Response) => {
+export const createOutfit = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
-    const user = req.user as User;
+    const user = req.user as userTypes;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -41,14 +44,17 @@ export const createOutfit = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserOutfits = async (req: Request, res: Response) => {
+export const getUserOutfits = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { userId } = req.query;
 
     if (!userId) {
       return res.status(400).json({ message: " UserId is required" });
     }
-    const currentUser = req.user as User;
+    const currentUser = req.user as userTypes;
     if (currentUser.id !== userId) {
       return res
         .status(403)
@@ -69,13 +75,16 @@ export const getUserOutfits = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteOutfit = async (req: Request, res: Response) => {
+export const deleteOutfit = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { id } = req.params;
     if (!id) {
       return res.status(400).json({ message: "Id is required" });
     }
-    const currentUser = req.user as User;
+    const currentUser = req.user as userTypes;
     if (!currentUser) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -94,13 +103,16 @@ export const deleteOutfit = async (req: Request, res: Response) => {
   }
 };
 
-export const updateOutfit = async (req: Request, res: Response) => {
+export const updateOutfit = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { id } = req.params;
     if (!id) {
       return res.status(400).json({ message: "Id is required" });
     }
-    const currentUser = req.user as User;
+    const currentUser = req.user as userTypes;
     if (!currentUser) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -134,13 +146,16 @@ export const updateOutfit = async (req: Request, res: Response) => {
   }
 };
 
-export const getOutfitById = async (req: Request, res: Response) => {
+export const getOutfitById = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { id } = req.params;
     if (!id) {
       return res.status(400).json({ message: "Id is required" });
     }
-    const currentUser = req.user as User;
+    const currentUser = req.user as userTypes;
     if (!currentUser) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }

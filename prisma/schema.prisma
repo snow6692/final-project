@@ -10,13 +10,22 @@ datasource db {
 model User {
   id            String         @id @default(uuid())
   email         String         @unique
+  name          String?
   password      String?
   emailVerified DateTime?
+  image         String?
+  Gender        GenderType?
+  dateOfBirth   DateTime?
   accounts      Account[]
   sessions      Session[]
   images        Image[]
   outfits       Outfit[]
   notifications Notification[]
+}
+
+enum GenderType {
+  MALE
+  FEMALE
 }
 
 model Account {
@@ -48,18 +57,21 @@ model Session {
 model Category {
   id        String   @id @default(uuid())
   name      String
+  image     String
+  images    Image[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  image     String
 }
 
 model Image {
-  id        String   @id @default(uuid())
-  url       String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  outfits   Outfit[]
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  url        String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outfits    Outfit[]
+  Category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String
+  createdAt  DateTime @default(now())
 }
 
 model Outfit {

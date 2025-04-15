@@ -1,10 +1,14 @@
-// src/types/express.d.ts
-import { User } from "@prisma/client";
+import { Request as ExpressRequest } from "express";
+import { userTypes } from "./user.types";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User | null; // Ensure `user` property on the request is typed as `User` or `null`
-    }
-  }
+// Define a minimal User type that Passport might expect
+interface PassportUser {
+  id: string;
+  [key: string]: any;
+}
+
+// Define CustomRequest to include both userTypes and Passport's user
+export interface CustomRequest extends ExpressRequest {
+  userId?: string;
+  user?: userTypes | PassportUser;
 }

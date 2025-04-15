@@ -8,10 +8,11 @@ import {
   getImagesByCategory,
   getImagesByUserId,
 } from "../controllers/image";
+import { protect } from "../auth/auth.middleware";
 
 const router = express.Router();
 
-// router.post("/", isAuthenticated, upload.single("image"), createImage);
+// router.post("/", protect, upload.single("image"), createImage);
 
 // router.delete("/:id", isAuthenticated, deleteImageById);
 
