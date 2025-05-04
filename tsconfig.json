@@ -129,6 +129,6 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "src/types/**/*"],
+  "include": ["src/**/*", "src/types/**/*", "../my-expo-app/app/home"],
   "exclude": ["node_modules"]
 }

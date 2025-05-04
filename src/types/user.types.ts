@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import prisma from "../config/prisma";
 
 export type userTypes = Prisma.UserGetPayload<{
   include: {
@@ -7,3 +8,15 @@ export type userTypes = Prisma.UserGetPayload<{
     outfits: true;
   };
 }>;
+
+const getCurrentUserTypes = async () => {
+  return await prisma.user.findFirst({
+    include: {
+      images: true,
+      notifications: true,
+      outfits: true,
+    },
+  });
+};
+
+export type UserTypeClient = Awaited<ReturnType<typeof getCurrentUserTypes>>;
