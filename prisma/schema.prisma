@@ -21,6 +21,7 @@ model User {
   images        Image[]
   outfits       Outfit[]
   notifications Notification[]
+  Schedule      Schedule[]
 }
 
 enum GenderType {
@@ -75,16 +76,28 @@ model Image {
 }
 
 model Outfit {
-  id        String   @id @default(uuid())
-  favorite  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String     @id @default(uuid())
+  favorite  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   images    Image[]
+  Schedule  Schedule[]
 }
 
+model Schedule {
+  id        String   @id @default(uuid())
+  date      DateTime
+  userId    String
+  outfitId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outfit    Outfit   @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, date]) // Ensure one outfit per day per user
+}
 
 model Notification {
   id          String   @id @default(uuid())
