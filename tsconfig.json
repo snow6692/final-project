@@ -126,8 +126,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
     "typeRoots": ["./node_modules/@types", "./src/types"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "./dist" /* Specify an output folder for all emitted files. */
   },
   "include": ["src/**/*", "src/types/**/*", "../my-expo-app/app/home"],
   "exclude": ["node_modules"]
