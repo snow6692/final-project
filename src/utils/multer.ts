@@ -5,7 +5,7 @@ import cloudinary from "./cloudinary"; // Cloudinary config import
 const storage = new CloudinaryStorage({
   cloudinary,
   params: (req, file) => ({
-    folder: "outfit_images",
+    folder: req.body.isProfileImage ? "profile_images" : "outfit_images", // Dynamically set folder
     allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
   }),
 });

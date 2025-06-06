@@ -52,26 +52,30 @@ export const updateUserById = async (req: CustomRequest, res: Response) => {
   }
 
   try {
-    // Validate the request body using Zod
+    // Parse JSON data from the request body
     const parsedData = userZod.safeParse(req.body);
     if (!parsedData.success) {
       return res.status(400).json({ message: parsedData.error.errors });
     }
 
     const data: userZod = parsedData.data;
+    const updateData: any = {
+      name: data.name,
+      dateOfBirth: data.dateOfBirth,
+    };
 
-    // Prepare the update data
+    // Handle image upload if present
+    if (req.file) {
+      const imageUrl = (req.file as any).path; // Cloudinary URL
+      updateData.image = imageUrl; // Store the URL in the user record
+    } else if (req.body.image === "") {
+      // Handle case where user wants to remove the image
+      updateData.image = null;
+    }
 
-    // Update the user in the database
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: {
-        dateOfBirth: data.dateOfBirth,
-        Gender: data.Gender,
-        image: data.image,
-        name: data.name,
-        
-      },
+      data: updateData,
       include: {
         images: true,
         notifications: true,
@@ -80,16 +84,13 @@ export const updateUserById = async (req: CustomRequest, res: Response) => {
       },
     });
 
-    // Exclude the password from the response
     const { password, ...userWithoutPassword } = updatedUser;
-
     res.status(200).json(userWithoutPassword);
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
 export const changePassword = async (req: CustomRequest, res: Response) => {
   const userId = req.userId as string;
 
