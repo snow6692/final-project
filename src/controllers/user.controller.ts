@@ -70,6 +70,7 @@ export const updateUserById = async (req: CustomRequest, res: Response) => {
         Gender: data.Gender,
         image: data.image,
         name: data.name,
+        
       },
       include: {
         images: true,
