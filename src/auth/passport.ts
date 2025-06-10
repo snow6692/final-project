@@ -70,12 +70,7 @@ passport.deserializeUser(async (id: string, done) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
-        images: true,
-        notifications: true,
-        outfits: true,
-        sessions: true,
-      },
+     
     });
     done(null, user);
   } catch (error) {

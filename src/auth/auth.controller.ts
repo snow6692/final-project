@@ -32,12 +32,6 @@ export const signUp = async (req: Request, res: Response) => {
         email,
         password: hashedPassword,
       },
-      include: {
-        images: true,
-        outfits: true,
-        notifications: true,
-        sessions: true,
-      },
     });
 
     const token = jwt.sign({ userId: user.id }, config.JWT_SECRET, {
@@ -67,12 +61,6 @@ export const signIn = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { email },
-      include: {
-        images: true,
-        outfits: true,
-        notifications: true,
-        sessions: true,
-      },
     });
 
     if (!user || !user.password) {

@@ -8,43 +8,23 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  email         String         @unique
+  id            String      @id @default(uuid())
+  email         String      @unique
   name          String?
   password      String?
   emailVerified DateTime?
   image         String?
   Gender        GenderType?
   dateOfBirth   DateTime?
-  accounts      Account[]
   sessions      Session[]
   images        Image[]
   outfits       Outfit[]
-  notifications Notification[]
   Schedule      Schedule[]
 }
 
 enum GenderType {
   MALE
   FEMALE
-}
-
-model Account {
-  id                String  @id @default(uuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
 }
 
 model Session {
@@ -97,13 +77,4 @@ model Schedule {
   outfit    Outfit   @relation(fields: [outfitId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date]) // Ensure one outfit per day per user
-}
-
-model Notification {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  createdAt   DateTime @default(now())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

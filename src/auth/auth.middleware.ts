@@ -1,5 +1,3 @@
-
-
 import { Request as ExpressRequest, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
@@ -27,7 +25,6 @@ export const protect = async (
     req.userId = decoded.userId;
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
-      include: { images: true, notifications: true, outfits: true },
     });
     if (!user) {
       return res.status(401).json({ message: "User not found" });
