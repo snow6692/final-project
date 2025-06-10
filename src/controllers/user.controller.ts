@@ -79,7 +79,6 @@ export const updateUserById = async (req: CustomRequest, res: Response) => {
       data: updateData,
       include: {
         images: true,
-        notifications: true,
         outfits: true,
         sessions: true,
       },
