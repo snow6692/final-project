@@ -1,7 +1,7 @@
 import prisma from "../config/prisma";
 import { Response } from "express";
 import { CustomRequest } from "../types/express";
-import { userTypes } from "../types/user.types";
+// import { userTypes } from "../types/user.types";
 
 export async function getAllCategories(req: CustomRequest, res: Response) {
   try {
@@ -24,7 +24,8 @@ export const getCategoryById = async (req: CustomRequest, res: Response) => {
       return res.status(400).json({ message: "Category ID is required" });
     }
 
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }

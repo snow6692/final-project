@@ -5,22 +5,17 @@ import passport from "./passport";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import { CustomRequest } from "../types/express";
-import { userTypes } from "../types/user.types";
+// import { userTypes } from "../types/user.types";
 import prisma from "../config/prisma";
 
 // Define the callback handler with simpler typing
 const googleCallbackHandler = async (req: CustomRequest, res: Response) => {
-  const userFromReq = req.user as userTypes;
+  // const userFromReq = req.user as userTypes;
+  const userFromReq = req.user;
 
   // Fetch the user manually to ensure relations are included
   const user = await prisma.user.findUnique({
     where: { id: userFromReq.id },
-    include: {
-      images: true,
-      notifications: true,
-      outfits: true,
-      sessions: true,
-    },
   });
 
   if (!user) {

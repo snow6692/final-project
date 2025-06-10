@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { userTypes } from "../types/user.types";
+// import { userTypes } from "../types/user.types";
 import prisma from "../config/prisma";
 import { CustomRequest } from "../types/express";
 import { passwordZod, userZod } from "../validation/user.zod";
@@ -12,7 +12,8 @@ export const getUserById = async (req: CustomRequest, res: Response) => {
   }
 
   try {
-    const currentUser = req.user as userTypes;
+    // const currentUser = req.user as userTypes;
+    const currentUser = req.user;
 
     if (!currentUser) {
       return res.status(404).json({ message: "User not found" });

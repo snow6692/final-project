@@ -1,10 +1,9 @@
+import { PrismaClient } from "@prisma/client";
 import { Request as ExpressRequest, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import prisma from "../config/prisma";
-import { userTypes } from "../types/user.types";
 import { CustomRequest } from "../types/express";
-
 // Define a custom Request type locally
 
 export const protect = async (
@@ -29,7 +28,7 @@ export const protect = async (
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-    req.user = user as userTypes;
+    req.user = user;
 
     next();
   } catch (err) {

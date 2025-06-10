@@ -6,12 +6,13 @@ import {
   UpdateScheduleInput,
 } from "../validation/schedule.zod";
 import prisma from "../config/prisma";
-import { userTypes } from "../types/user.types";
+// import { userTypes } from "../types/user.types";
 import { CustomRequest } from "../types/express";
 
 export const createSchedule = async (req: CustomRequest, res: Response) => {
   try {
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -67,7 +68,8 @@ export const createSchedule = async (req: CustomRequest, res: Response) => {
 
 export const getUserSchedules = async (req: CustomRequest, res: Response) => {
   try {
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -103,7 +105,8 @@ export const getUserSchedules = async (req: CustomRequest, res: Response) => {
 export const updateSchedule = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -180,7 +183,8 @@ export const deleteSchedule = async (req: CustomRequest, res: Response) => {
       return res.status(400).json({ message: "Schedule ID is required" });
     }
 
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }

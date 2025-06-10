@@ -5,12 +5,13 @@ import {
   UpdateOutfitInput,
 } from "../validation/outfit.zod";
 import prisma from "../config/prisma";
-import { userTypes } from "../types/user.types";
+// import { userTypes } from "../types/user.types";
 import { CustomRequest } from "../types/express";
 
 export const createOutfit = async (req: CustomRequest, res: Response) => {
   try {
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -96,7 +97,8 @@ export const deleteOutfit = async (req: CustomRequest, res: Response) => {
       return res.status(400).json({ message: "Outfit ID is required" });
     }
 
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -123,7 +125,8 @@ export const deleteOutfit = async (req: CustomRequest, res: Response) => {
 
 export const getUserOutfits = async (req: CustomRequest, res: Response) => {
   try {
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
@@ -144,7 +147,8 @@ export const updateOutfit = async (req: CustomRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { favorite } = req.body;
-    const user = req.user as userTypes;
+    // const user = req.user as userTypes;
+    const user = req.user;
     if (!user) {
       return res.status(401).json({ error: "Unauthorized: Please log in" });
     }
