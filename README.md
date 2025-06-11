@@ -103,8 +103,4 @@ npm run dev
 
 ---
 
-## 📞 Contact
 
-If you need any help or have questions, feel free to open an issue or contact the developer.
-
----
